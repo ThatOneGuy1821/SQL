@@ -1,0 +1,183 @@
+# Create Top Box Office Table
+# This is an Updated List in similar style to [Pamela Fox](https://gist.github.com/pamelafox)
+# Reflects Data from 08/2023, pulled from [Box Office Mojo](https://www.boxofficemojo.com/chart/ww_top_lifetime_gross)
+
+
+CREATE TABLE BoxOffice (
+  Rank int,
+  Title varchar(50),
+  Studio varchar(50),
+  Worldwide_Millions int,
+  Domestic_Millions int,
+  Percent_Domestic decimal,
+  Overseas_Millions int,
+  Percent_Overseas decimal,
+  Year int
+);
+
+INSERT INTO BoxOffice VALUES
+  (1, 'Avatar', '20th Century Studios', 2923,785,27,2138,73,2009),
+  (2,'Avengers: Endgame','Walt Disney Studios',2799,858,30.7,1941,69.3,2019),
+  (3,'Avatar: The Way of Water','20th Century Studios',2320,684,29.5,1636,70.5,2022),
+  (4,'Titanic','Paramount Pictures / 20th Century Studios',2264,674,29.8,1590,70.2,1997),
+  (5,'Star Wars: Episode VII - The Force Awakens','Walt Disney Studios',2071,936,45.2,1134,54.8,2015),
+  (6,'Avengers: Infinity War','Walt Disney Studios',2052,678,33.1,1373,66.9,2018),
+  (7,'Spider-Man: No Way Home','Sony',1921,814,42.4,1107,57.6,2021),
+  (8,'Jurassic World','Universal',1671,653,39.1,1018,60.9,2015),
+  (9,'The Lion King','Walt Disney Studios',1663,543,32.7,1119,67.3,2019),
+  (10,'The Avengers','Walt Disney Studios',1520,673,41,897,59,2012),
+  (11,'Furious 7','Universal',1515,353,23.3,1162,76.7,2015),
+  (12,'Top Gun: Maverick','Paramount Pictures',1495,718,48,776,52,2022),
+  (13,'Frozen II','Walt Disney Studios',1453,477,32.8,976,67.2,2019),
+  (14,'Avengers: Age of Ultron','Walt Disney Studios',1405,459,32.7,946,67.3,2015),
+  (15,'The Super Mario Bros. Movie','Universal',1355,574,42.4,780,57.6,2023),
+  (16,'Black Panther','Walt Disney Studios',1349,700,51.9,649,48.1,2018),
+  (17,'Harry Potter and the Deathly Hallows: Part 2','Warner Bros.',1342,381,28.4,960,71.6,2011),
+  (18,'Star Wars: Episode VIII - The Last Jedi','Walt Disney Studios',1334,620,46.5,714,53.5,2017),
+  (19,'Jurassic World: Fallen Kingdom','Universal',1310,417,31.9,892,68.1,2018),
+  (20,'Frozen','Walt Disney Studios',1284,400,31.2,883,68.8,2013),
+  (21,'Barbie','Warner Bros.',1280,566,44.3,713,55.7,2023),
+  (22,'Beauty and the Beast','Walt Disney Studios',1266,504,39.8,761,60.2,2017),
+  (23,'Incredibles 2','Walt Disney Studios',1243,608,49,634,51,2018),
+  (24,'The Fate of the Furious','Universal',1236,226,18.3,1009,81.7,2017),
+  (25,'Iron Man 3','Walt Disney Studios',1215,409,33.6,806,66.4,2013),
+  (26,'Minions','Universal',1159,336,29,823,71,2015),
+  (27,'Captain America: Civil War','Walt Disney Studios',1155,408,35.3,746,64.7,2016),
+  (28,'Aquaman','Warner Bros.',1148,335,29.2,813,70.8,2018),
+  (29,'The Lord of the Rings: The Return of the King','New Line Cinema',1147,379,33.1,768,66.9,2003),
+  (30,'Skyfall','Sony',1142,304,26.6,838,73.4,2012),
+  (31,'Spider-Man: Far From Home','Sony',1131,390,34.5,741,65.5,2019),
+  (32,'Captain Marvel','Walt Disney Studios',1131,426,37.7,704,62.3,2019),
+  (33,'Transformers: Dark of the Moon','Paramount Pictures',1123,352,31.4,771,68.6,2011),
+  (34,'Jurassic Park','Universal',1109,404,36.4,705,63.6,1993),
+  (35,'Transformers: Age of Extinction','Paramount Pictures',1104,245,22.2,858,77.8,2014),
+  (36,'The Dark Knight Rises','Warner Bros.',1081,448,41.4,633,58.6,2012),
+  (37,'Star Wars: Episode IX - The Rise of Skywalker','Walt Disney Studios',1077,515,47.8,561,52.2,2019),
+  (38,'Joker','Warner Bros.',1074,335,31.2,738,68.8,2019),
+  (39,'Toy Story 4','Walt Disney Studios',1073,434,40.4,639,59.6,2019),
+  (40,'Toy Story 3','Walt Disney Studios',1067,415,38.9,652,61.1,2010),
+  (41,'Pirates of the Caribbean: Dead Man"s Chest','Walt Disney Studios',1066,423,39.7,642,60.3,2006),
+  (42,'Rogue One: A Star Wars Story','Walt Disney Studios',1058,533,50.4,525,49.6,2016),
+  (43,'Aladdin','Walt Disney Studios',1054,355,33.7,698,66.3,2019),
+  (44,'Pirates of the Caribbean: On Stranger Tides','Walt Disney Studios',1046,241,23,805,77,2011),
+  (45,'Despicable Me 3','Universal',1034,264,25.6,770,74.4,2017),
+  (46,'Finding Dory','Walt Disney Studios',1029,486,47.2,542,52.8,2016),
+  (47,'Star Wars: Episode 1 - The Phantom Menace','Walt Disney Studios',1027,474,46.2,552,53.8,1999),
+  (48,'Zootopia','Walt Disney Studios',1025,341,33.3,684,66.7,2016),
+  (49,'Alice in Wonderland','Walt Disney Studios',1025,334,32.6,691,67.4,2010),
+  (50,'Harry Potter and the Sorcerer"s Stone','Warner Bros.',1023,318,31.2,704,68.8,2001),
+  (51,'The Hobbit: An Unexpected Journey','Warner Bros.',1017,303,29.8,714,70.2,2012),
+  (52,'The Dark Knight','Warner Bros.',1006,534,53.2,471,46.8,2008),
+  (53,'Jurassic World Dominion','Universal',1001,376,37.6,625,62.4,2022),
+  (54,'Jumanji: Welcome to the Jungle','Sony',995,404,40.6,590,59.4,2017),
+  (55,'Harry Potter and the Deathly Hallows: Part 1','Warner Bros.',977,296,30.3,680,69.7,2010),
+  (56,'Despicable Me 2','Universal',970,368,37.9,602,62.1,2013),
+  (57,'The Lion King','Walt Disney Studios',968,422,43.6,545,56.4,1994),
+  (58,'The Jungle Book','Walt Disney Studios',967,364,37.6,603,62.4,2016),
+  (59,'The Hobbit: The Battle of the Five Armies','Warner Bros.',962,255,26.5,707,73.5,2014),
+  (60,'Pirates of the Caribbean: At World"s End','Walt Disney Studios',961,309,32.3,652,67.8,2007),
+  (61,'The Hobbit: The Desolation of Smaug','Warner Bros.',959,258,26.9,700,73.1,2013),
+  (62,'Doctor Strange in the Multiverse of Madness','Walt Disney Studios',955,411,43,544,57,2022),
+  (63,'The Lord of the Rings: The Two Towers','New Line Cinema',947,342,36.2,604,63.8,2002),
+  (64,'Harry Potter and the Order of the Phoenix','Warner Bros.',942,292,31,649,69,2007),
+  (65,'Finding Nemo','Walt Disney Studios',941,380,40.4,560,59.6,2003),
+  (66,'Minions: The Rise of Gru','Universal',939,369,39.3,569,60.7,2022),
+  (67,'Harry Potter and the Half-Blood Prince','Warner Bros.',934,302,32.4,632,67.6,2009),
+  (68,'Shrek 2','Paramount Pictures',928,441,47.5,487,52.5,2004),
+  (69,'Harry Potter and the Chamber of Secrets','Warner Bros.',925,262,28.4,663,71.6,2002),
+  (70,'Bohemian Rhapsody','20th Century Studios',910,216,23.8,694,76.2,2018),
+  (71,'The Battle at Lake Changjin','CMC Pictures',902,0,0,902,100,2021),
+  (72,'The Lord of the Rings: The Fellowship of the Ring','New Line Cinema',898,316,35.2,582,64.8,2001),
+  (73,'Harry Potter and the Goblet of Fire','Warner Bros.',896,290,32.4,606,67.6,2005),
+  (74,'Spider-Man 3','Sony',894,336,37.6,558,62.4,2007),
+  (75,'The Secret Life of Pets','Universal',894,368,41.2,525,58.8,2016),
+  (76,'Ice Age: Dawn of the Dinosaurs','20th Century Studios',886,196,22.2,690,77.8,2009),
+  (77,'Spectre','Sony',880,200,22.7,680,77.3,2015),
+  (78,'Spider-Man: Homecoming','Sony',880,334,38,545,62,2017),
+  (79,'Ice Age: Continental Drift','20th Century Studios',877,161,18.4,715,81.6,2012),
+  (80,'Batman v Superman','Warner Bros.',873,330,37.8,543,62.2,2016),
+  (81,'Wolf Warrior 2','Kadowkawa Corporation',870,2,0.3,867,99.7,2017),
+  (82,'Star Wars: Episode III - Revenge of the Sith','Walt Disney Studios',868,380,43.8,488,56.2,2005),
+  (83,'The Hunger Games: Catching Fire','Lionsgate',865,424,49.1,440,50.9,2013),
+  (84,'Guardians of the Galaxy Vol. 2','Walt Disney Studios',863,389,45.1,473,54.9,2017),
+  (85,'Black Panther: Wakanda Forever','Walt Disney Studios',859,453,52.8,405,47.2,2022),
+  (86,'Inside Out','Walt Disney Studios',858,356,41.6,501,58.4,2015),
+  (87,'Venom','Sony',856,213,24.9,642,75.1,2018),
+  (88,'Thor: Ragnarok','Walt Disney Studios',855,315,36.8,540,63.2,2017),
+  (89,'The Twilight Saga: Breakind Dawn - Part 2','Summit Entertainment',848,292,34.4,556,65.6,2012),
+  (90,'Guardians of the Galaxy Vol. 3','Walt Disney Studios',845,358,42.5,486,57.5,2023),
+  (91,'Inception','Warner Bros.',837,292,35,544,65,2010),
+  (92,'Transformers: Revenge of the Fallen','Paramount Pictures',836,402,48.1,434,51.9,2009),
+  (93,'Spider-Man','Sony',825,407,49.3,418,50.7,2002),
+  (94,'Wonder Woman','Warner Bros.',822,412,50.2,410,49.8,2017),
+  (95,'Hi, Mom','Sigma III',822,0,0,822,100,2021),
+  (96,'Independence Day','20th Century Studios',817,306,37.5,511,62.5,1996),
+  (97,'Coco','Walt Disney Studios',814,210,25.8,603,74.2,2017),
+  (98,'Fantastic Beasts and Where to Find Them','Warner Bros.',814,234,28.8,580,71.2,2016),
+  (99,'Shrek the Third','Paramount Pictures',813,322,39.7,490,60.3,2007),
+  (100,'Jumanji: The Next Level','Sony',801,320,40,481,60,2019);
+
+# Analysis:
+
+# What are the Latest and Oldest Entries to this list?
+
+SELECT Title, Year
+FROM BoxOffice 
+WHERE Year IN (SELECT MAX(Year) AS Most_Recent FROM BoxOffice) OR Year IN (SELECT MIN(Year) AS Oldest FROM BoxOffice)
+ORDER BY Year DESC
+;
+
+# What is the average Domestic / Overseas percentage split?
+
+SELECT 
+  ROUND(AVG(Percent_Domestic),0) AS Avg_Dom_Percentage,
+  ROUND(AVG(Percent_Overseas),0) AS Avg_Overseas_Percentage
+FROM BoxOffice
+;
+
+# What percent of Movies earned at least 60% of their Gross Overseas?
+
+SELECT COUNT(*) AS "Percent That Earned at Least 60% Overseas" 
+FROM BoxOffice 
+WHERE Percent_Overseas >= 60
+;
+
+# Which Movies earned at least Half their gross Domestically?
+
+SELECT Title, Percent_Domestic
+FROM BoxOffice
+WHERE Domestic_Millions >= Overseas_Millions
+;
+
+# Which movies earned the Least Domestically?
+
+SELECT Title, Percent_Domestic, Domestic_Millions, Worldwide_Millions
+FROM BoxOffice 
+WHERE Percent_Domestic IN (SELECT MIN(Percent_Domestic) AS Min_Percent FROM BoxOffice)
+
+# How many movies does each Studio have represented?
+
+SELECT Studio, COUNT(Title) AS 'Number of Movies' 
+FROM BoxOffice 
+GROUP BY Studio
+ORDER BY COUNT(Title)
+;
+
+# Which Studios have at Least 10 Movies represented on this list?
+
+SELECT 
+  Studio, COUNT(Title) AS "Count of Movies on Top 100 List" 
+FROM BoxOffice 
+GROUP BY Studio 
+HAVING COUNT(Title) >= 10
+;
+
+# How many Movies on this list are Disney owned?
+
+SELECT
+    COUNT(CASE 
+            WHEN Studio LIKE '%20th Century Studios%' OR Studio = 'Walt Disney Studios' 
+            THEN 'Disney'
+            END) AS 'Percent of Disney Titles'
+FROM BoxOffice
+;
