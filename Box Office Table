@@ -1,5 +1,7 @@
 --Create Top Box Office Table
+--Data pulled from [Box Office Mojo](https://www.boxofficemojo.com/chart/ww_top_lifetime_gross/?area=XWW)
 
+```
 CREATE TABLE BoxOffice
 (Rank int,
 Title varchar(50),
@@ -112,10 +114,9 @@ INSERT INTO BoxOffice VALUES
 (97,'Coco','Walt Disney Studios',814,210,25.8,603,74.2,2017),
 (98,'Fantastic Beasts and Where to Find Them','Warner Bros.',814,234,28.8,580,71.2,2016),
 (99,'Shrek the Third','Paramount Pictures',813,322,39.7,490,60.3,2007),
-(100,'Jumanji: The Next Level','Sony',801,320,40,481,60,2019),
-(101,'Harry Potter and the Prisoner of Azkaban','Warner Bros.',797,250,31.4,547,68.6,2004),
-(102,'Pirates of the Caribbean: Dead Men Tell No Tales','Walt Disney Studios',795,172,21.7,623,78.3,2017),
-(103,'E.T. the Extra-Terrestrial','Universal',792,437,55.1,355,44.9,1982);
+(100,'Jumanji: The Next Level','Sony',801,320,40,481,60,2019);
+```
+
 
 --Data pulled from https://www.boxofficemojo.com/chart/ww_top_lifetime_gross/?area=XWW
 
