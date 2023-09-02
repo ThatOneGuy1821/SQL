@@ -1,0 +1,286 @@
+# This Project is a step-by-step walkthrough detailing my thought process for how I explored a new Database
+# For reference: I used SQLite Studio and the [Chinook Database](https://github.com/lerocha/chinook-database/blob/master/ChinookDatabase/DataSources/Chinook_Sqlite_AutoIncrementPKs.sqlite)
+
+---Start by Peeking at Pricing: Variation and Amount Sold at Each Price--- 
+
+SELECT UnitPrice, COUNT(UnitPrice) AS Units
+FROM Track
+GROUP BY UnitPrice
+LIMIT 50
+
+---Turns out there are only two prices---
+---Investigate why a small minority don't come in at the standard 0.99 price---
+
+SELECT Album.Title AS Album, Track.Name AS Song, UnitPrice, Genre.Name AS Genre, MediaType.Name AS Media
+FROM Track
+JOIN Genre
+    ON Track.GenreId = Genre.GenreId
+JOIN Album
+    ON Album.AlbumId = Track.AlbumId
+JOIN MediaType
+    ON Track.MediaTypeId = MediaType.MediaTypeId
+WHERE UnitPrice <> 0.99
+
+---All 213 Units sold at 1.99 are Video Files---
+---Next step: Check to see if there are any Video Files sold at 0.99---
+
+SELECT T.Name AS Track, M.Name AS Media, UnitPrice
+FROM Track T
+JOIN MediaType M
+    ON T.MediaTypeId = M.MediaTypeId
+WHERE M.MediaTypeId = 3
+AND UnitPrice = 0.99
+
+---List all Video Files, with Price, Genre and Episode Name---
+---Add a "Music Video" tag to explain why only one Video File comes in at 0.99---
+---Use ORDER BY to organize the data in a way that makes sense---
+
+WITH Video_Tracks AS (
+SELECT Track.Name AS Episode, Genre.Name AS Genre, Album.Title AS Series, MediaType.Name AS Media, UnitPrice
+FROM Track
+JOIN MediaType
+    ON Track.MediaTypeId = MediaType.MediaTypeId
+JOIN Genre
+    ON Track.GenreId = Genre.GenreId
+JOIN Album
+    ON Album.AlbumId = Track.AlbumId
+WHERE MediaType.MediaTypeId = 3
+ORDER BY UnitPrice, Series, Episode
+)
+SELECT Episode, Series, UnitPrice,
+    CASE
+        WHEN UnitPrice = 0.99 THEN 'Music Video'
+        ELSE 'TV Show'
+    END AS Media
+FROM Video_Tracks  
+
+---Update 'Lost' Seasons 1-3 to be 'LOST'---
+---This is both for consistency and accuracy---
+---Previous ORDER BY results separated Season 4 from Seasons 1-3 due to inconsistent Naming---
+
+UPDATE Album
+SET Title = 'LOST, Season 3'
+WHERE Title = 'Lost, Season 3'
+
+UPDATE Album
+SET Title = 'LOST, Season 2'
+WHERE Title = 'Lost, Season 2'
+
+UPDATE Album
+SET Title = 'LOST, Season 1'
+WHERE Title = 'Lost, Season 1'
+
+UPDATE Artist
+SET Name = 'LOST'
+WHERE ArtistId = 149
+
+---List Invoice Number, Customer Name, Invoice Total, Country & Sales Agent for all Invoices and Customers---
+
+SELECT 
+    i.InvoiceId, 
+    c.FirstName||' '||c.LastName AS Customer,
+    i.Total,
+    i.BillingCountry, 
+    e.FirstName||' '||e.LastName AS Sales_Agent 
+FROM Invoice i
+FULL OUTER JOIN Customer c
+    ON i.CustomerId = c.CustomerId
+JOIN Employee e
+    ON c.SupportRepId = e.EmployeeId
+
+---Find out how many Invoices are from 2009---
+
+SELECT COUNT(InvoiceId) AS "Number of Invoices from 2009"
+FROM Invoice
+WHERE InvoiceDate LIKE "2009%"
+
+---Use Self-JOIN to Create an Employee Org Chart---
+
+SELECT 
+    a.FirstName||' '||a.LastName AS Employee,
+    a.Title,
+    b.FirstName||' '||b.LastName AS "Reports To",
+    DATE(a.HireDate) AS "Hire Date"
+FROM Employee a
+LEFT OUTER JOIN Employee b
+    ON a.ReportsTo = b.EmployeeId
+ORDER BY a.ReportsTo
+
+---Figure out Total Sales by Sales Agent---
+
+WITH Sales_Rep_Data AS (
+SELECT
+    e.FirstName||' '||e.LastName AS Sales_Rep,
+    SUM(i.Total) OVER (PARTITION BY e.LastName) AS Total_Sales
+FROM Employee e
+JOIN Customer c
+    ON e.EmployeeId = c.SupportRepId
+JOIN Invoice i
+    ON c.CustomerId = i.CustomerId
+)
+SELECT DISTINCT(Sales_Rep) AS "Sales Agent", ROUND(Total_Sales,2) AS "Total Sales"
+FROM Sales_Rep_Data
+
+---Find the Top 5 Customers in terms of Sales---
+
+SELECT
+    c.CustomerId,
+    c.FirstName||' '||c.LastName AS Customer,
+    SUM(Total) AS Total_Purchases
+FROM Customer c
+JOIN Invoice i
+    ON c.CustomerId = i.CustomerId
+GROUP BY Customer
+ORDER BY Total_Purchases DESC
+LIMIT 5
+
+---Determine the Musical Preferences of our Top Customer---
+
+WITH Top_Customer AS (
+SELECT
+    c.CustomerId,
+    c.FirstName||' '||c.LastName AS Customer,
+    SUM(Total) AS Total_Purchases
+FROM Customer c
+JOIN Invoice i
+    ON c.CustomerId = i.CustomerId
+GROUP BY Customer
+ORDER BY Total_Purchases DESC
+LIMIT 1
+)
+SELECT 
+    g.Name AS Genre,
+    COUNT(g.Name) AS Purchases_from_Genre
+FROM Genre g
+     JOIN Track t
+        ON g.genreId = t.genreId
+     JOIN InvoiceLine iLine
+         ON t.TrackId = iLine.TrackId
+     JOIN Invoice i
+         ON iLine.InvoiceId = i.InvoiceId
+     JOIN Customer c
+         ON i.CustomerId = c.CustomerId
+     JOIN Top_Customer tp
+         ON tp.CustomerId = c.CustomerId
+     JOIN MediaType mt
+         ON t.MediaTypeID = mt.MediaTypeID
+WHERE mt.Name NOT LIKE "%video%"
+GROUP BY Genre
+ORDER BY Purchases_from_Genre DESC
+
+---Determine 10 Best Selling Artists---
+
+SELECT 
+    Artist.Name AS Artist,
+    ROUND(SUM(iLine.Quantity*iLine.UnitPrice),2) AS Artist_Revenue
+FROM Artist
+    JOIN Album
+        ON Album.ArtistId = Artist.ArtistId
+    JOIN Track t
+        ON t.AlbumId = Album.AlbumId
+    JOIN InvoiceLine iLine
+        ON iLine.TrackId = t.TrackId
+    JOIN MediaType mt
+        ON t.MediaTypeId = mt.MediaTypeId
+GROUP BY Artist.Name
+HAVING mt.MediaTypeId <> 3
+ORDER BY Artist_Revenue DESC
+LIMIT 10
+
+---Determine the 10 Best Sellers (Artists & TV Series)---
+---Note: This was my initial Query for the 10 Best Selling Artists---
+---I decided to make this a separate Query, since I don't consider TV Shows to be Artists---
+
+SELECT 
+    Artist.Name AS Artist,
+    ROUND(SUM(iLine.Quantity*iLine.UnitPrice),2) AS Artist_Revenue,
+    CASE
+        WHEN mt.MediaTypeId = 3 THEN "TV Series"
+        ELSE "Music"
+    END AS Media
+FROM Artist
+    JOIN Album
+        ON Album.ArtistId = Artist.ArtistId
+    JOIN Track t
+        ON t.AlbumId = Album.AlbumId
+    JOIN InvoiceLine iLine
+        ON iLine.TrackId = t.TrackId
+    JOIN MediaType mt
+        ON t.MediaTypeId = mt.MediaTypeId
+GROUP BY Artist.Name
+ORDER BY Artist_Revenue DESC
+LIMIT 10
+
+---List the Top 10 Selling Genres---
+
+SELECT 
+    g.Name AS Genre, 
+    ROUND(SUM(iLine.UnitPrice*iLine.Quantity),2) AS Revenue,
+    CASE
+        WHEN mt.Name LIKE "%video%" THEN "Video"
+        ELSE "Music"
+    END AS Media
+FROM Genre g
+    JOIN Track t 
+        ON t.GenreId = g.GenreId
+    JOIN InvoiceLine iLine
+        ON iLine.TrackId = t.TrackId
+    JOIN MediaType mt
+        ON t.MediaTypeId = mt.MediaTypeId
+GROUP BY g.Name
+ORDER BY Revenue DESC
+LIMIT 10
+
+---Artists with Most Content Available (Top 25)---
+
+SELECT 
+    Artist.Name AS Artist, 
+    COUNT(TrackId) AS Available_Tracks
+FROM Track
+JOIN Album
+    ON Track.AlbumId = Album.AlbumID
+JOIN Artist
+    ON Album.ArtistId = Artist.ArtistId
+GROUP BY Artist.Name
+ORDER BY Available_Tracks DESC
+LIMIT 25
+
+---How those Artists Rank when looking at Conversion of Content-to-Sales Percentage---
+
+WITH Product_vs_Sales AS (
+SELECT 
+    Artist.Name AS Artist, 
+    COUNT(Track.TrackId) AS Available_Tracks,
+    SUM(InvoiceLine.Quantity) AS Tracks_Sold
+FROM Track
+JOIN Album
+    ON Track.AlbumId = Album.AlbumID
+JOIN Artist
+    ON Album.ArtistId = Artist.ArtistId
+LEFT JOIN InvoiceLine
+    ON InvoiceLine.TrackId = Track.TrackId
+GROUP BY Artist.Name
+ORDER BY Available_Tracks DESC
+LIMIT 25
+)
+SELECT
+    Artist,
+    Available_Tracks,
+    Tracks_Sold,
+    ROUND(CAST(Tracks_Sold AS REAL)/CAST(Available_Tracks AS REAL)*100,2) AS "Percent Sold"
+FROM Product_vs_Sales
+ORDER BY "Percent Sold" DESC
+
+---Artists With No Sales---
+
+SELECT 
+    Artist.Name AS "Artists Without Any Sales"
+FROM Track
+FULL OUTER JOIN Album
+    ON Track.AlbumId = Album.AlbumID
+FULL OUTER JOIN Artist
+    ON Album.ArtistId = Artist.ArtistId
+FULL OUTER JOIN InvoiceLine
+    ON Track.TrackId = InvoiceLine.TrackId
+GROUP BY Artist.Name
+HAVING COUNT(InvoiceLine.Quantity) = 0
