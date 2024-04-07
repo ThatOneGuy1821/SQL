@@ -1,7 +1,3 @@
-# SELECT top_candidates
-# FROM data_analysts
-# WHERE position = 'entry level'
-
 Hello! And welcome to Cameron's super ~~secret~~ public SQL Portfolio. 
 
 If you're new here, feel free to poke around. This **code repository** highlights some of the work I've done in **SQL.** 
